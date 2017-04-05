@@ -1,0 +1,19 @@
+{
+  "name": "jc",
+  "version": "0.0.1",
+  "description": "Tail Jenkins Console Logs",
+  "main": "jenkins.js",
+  "bin": {
+    "jc": "./jenkins.js"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Casey Watson <watsoncj@gmail.com>",
+  "license": "MIT",
+  "dependencies": {
+    "default-pager": "^1.1.0",
+    "node-fetch": "^1.6.3",
+    "properties-reader": "0.0.15"
+  }
+}
