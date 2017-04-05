@@ -19,3 +19,4 @@ For convenience, create a config file at `~/.jc` with the following format:
 
     url=https://jenkins.example.com/job/Group/job
     branch=develop
+    delay-ms=5000

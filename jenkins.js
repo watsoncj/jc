@@ -39,6 +39,7 @@ usage: jc logs [-h | --help]
 For convenience, create a config file at \`~/.jc\` with the following format:
 url=https://jenkins.example.com/job/Group/job
 branch=develop
+delay-ms=5000
 `);
     process.exit();
 }
@@ -95,7 +96,7 @@ fetch(`${baseURL}/${branch}/api/json`)
                 res.body.on('close', function () {
                     start = seek.bytes;
                     if (tailing) {
-                        setTimeout(tail, 10000);
+                        setTimeout(tail, getProperty('delay-ms') || 10000);
                     }
                 });
             });
