@@ -93,7 +93,7 @@ fetch(`${baseURL}/${branch}/api/json`)
                 var seek = new SeekReader({seek: start});
                 res.body.pipe(seek).pipe(output);
                 res.body.on('close', function () {
-                    start = start + seek.bytes;
+                    start = seek.bytes;
                     if (tailing) {
                         setTimeout(tail, 10000);
                     }
