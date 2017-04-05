@@ -20,3 +20,7 @@ For convenience, create a config file at `~/.jc` with the following format:
     url=https://jenkins.example.com/job/Group/job
     branch=develop
     delay-ms=5000
+
+## Known Issues
+
+- Jenkins removes duplicate newlines in the `/consoleText` response. Because of this the output will not have any blank lines.
