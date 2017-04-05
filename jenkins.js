@@ -50,7 +50,7 @@ if (hasFlag('-h') || hasFlag('--help')) {
 
 var output = process.stdout;
 var tailing = hasFlag('-t') || hasFlag('--tail');
-if (hasFlag('-p') || hasFlag('--pager')) {
+if (hasFlag('-p') || hasFlag('--paginate')) {
     if (tailing) {
         throw new Error('Cannot use -t and -p at the same time.');
     }
