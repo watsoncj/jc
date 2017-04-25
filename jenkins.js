@@ -35,6 +35,7 @@ usage: jc logs [-h | --help]
                [-n | --number <build-number>]
                [-t | --tail]
                [-p | --paginate]
+               [-v | --verbose]
 
 For convenience, create a config file at \`~/.jc\` with the following format:
 url=https://jenkins.example.com/job/Group/job
@@ -73,6 +74,9 @@ if (!branch) {
 }
 
 output.write(`Fetching build info for ${branch}...\n`);
+if (hasFlag('-v') || hasFlag('--verbose')) {
+    console.log(`${baseURL}/${branch}/api/json`);
+}
 fetch(`${baseURL}/${branch}/api/json`)
     .then(function (res) {
         return res.json();
