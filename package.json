@@ -2,9 +2,9 @@
   "name": "jc",
   "version": "1.0.0",
   "description": "Tail Jenkins Console Logs",
-  "main": "jenkins.js",
+  "main": "index.js",
   "bin": {
-    "jc": "./jenkins.js"
+    "jc": "./index.js"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
