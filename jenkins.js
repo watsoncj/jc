@@ -1,15 +1,13 @@
 #!/usr/bin/env node
 const doc = `
 Usage:
-  jc logs [options] [--tail | --paginate]
+  jc logs [options] [--tail | --paginate] [<branch>] [<number>]
   jc --help
 
 Options:
   -h --help            Show this help information.
   -p --paginate        Display output using system pager.
   -u --url <url>       Jenkins base URL.
-  -b --branch <branch> SCM branch name to fetch logs.
-  -n --number <n>      Jenkins build number to fetch logs for.
   -t --tail            Tail remote logs output.
   -v --verbose         Print verbose status.
 
@@ -21,7 +19,6 @@ delay-ms=5000
 
 const {docopt} = require('docopt');
 opts = docopt(doc);
-console.log(opts);
 
 var path = require('path');
 var fetch = require('node-fetch');
@@ -56,7 +53,7 @@ if (!baseURL) {
     process.exit();
 }
 
-var branch = opts['--branch'] || getProperty('branch');
+var branch = opts['<branch>'] || getProperty('branch');
 if (!branch) {
     console.error('Error: branch is required.\n');
     console.error(doc);
@@ -73,18 +70,17 @@ fetch(`${baseURL}/${branch}/api/json`)
         return res.json();
     })
     .then(function (jsonBody) {
-        var buildNumber = jsonBody.lastBuild.number;
-        var i = process.argv.indexOf('-n');
-        if (i > -1) {
-            buildNumber = process.argv[i + 1];
-        }
+        var buildNumber = opts['<number>'] || jsonBody.lastBuild.number;
         output.write(`Fetching console output for build ${buildNumber}...\n`);
-        return baseURL = `${baseURL}/${branch}/${buildNumber}`;
-    })
-    .then(function (lastBuildUrl) {
+
+        var consoleUrl = `${baseURL}/${branch}/${buildNumber}/consoleText`;
+        if (verbose) {
+            output.write(`Fetching build output from ${consoleUrl}`);
+        }
+
         var start = 0;
         function tail() {
-            fetch(`${lastBuildUrl}/consoleText`)
+            fetch(consoleUrl)
             .then(function (res) {
                 var seek = new SeekReader({seek: start});
                 res.body.pipe(seek).pipe(output);
@@ -94,6 +90,12 @@ fetch(`${baseURL}/${branch}/api/json`)
                         setTimeout(tail, getProperty('delay-ms') || 10000);
                     }
                 });
+                res.body.on('error', function (err) {
+                    console.error('Error streaming console logs', err);
+                })
+            })
+            .catch(function (err) {
+                console.err('Error fetching console logs', err);
             });
         }
         tail();

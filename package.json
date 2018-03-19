@@ -1,6 +1,6 @@
 {
   "name": "jc",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Tail Jenkins Console Logs",
   "main": "jenkins.js",
   "bin": {
