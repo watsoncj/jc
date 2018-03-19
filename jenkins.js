@@ -1,4 +1,28 @@
 #!/usr/bin/env node
+const doc = `
+Usage:
+  jc logs [options] [--tail | --paginate]
+  jc --help
+
+Options:
+  -h --help            Show this help information.
+  -p --paginate        Display output using system pager.
+  -u --url <url>       Jenkins base URL.
+  -b --branch <branch> SCM branch name to fetch logs.
+  -n --number <n>      Jenkins build number to fetch logs for.
+  -t --tail            Tail remote logs output.
+  -v --verbose         Print verbose status.
+
+For convenience, create a config file at \`~/.jc\` with the following format:
+url=https://jenkins.example.com/job/Group/job
+branch=develop
+delay-ms=5000
+`;
+
+const {docopt} = require('docopt');
+opts = docopt(doc);
+console.log(opts);
+
 var path = require('path');
 var fetch = require('node-fetch');
 var pager = require('default-pager');
@@ -16,67 +40,34 @@ function getProperty(name) {
     }
 }
 
-function getArg(name, defaultValue) {
-    var i = process.argv.indexOf(name);
-    if (i > -1 || process.length > i + 1) {
-        return process.argv[i + 1];
-    }
-}
-
-function hasFlag(name) {
-    return process.argv.includes(name);
-}
-
-function help() {
-    console.log(`\
-usage: jc logs [-h | --help]
-               [-u | --url <url>]
-               [-b | --branch <branch>]
-               [-n | --number <build-number>]
-               [-t | --tail]
-               [-p | --paginate]
-               [-v | --verbose]
-
-For convenience, create a config file at \`~/.jc\` with the following format:
-url=https://jenkins.example.com/job/Group/job
-branch=develop
-delay-ms=5000
-`);
-    process.exit();
-}
-
-if (hasFlag('-h') || hasFlag('--help')) {
-    help();
-}
-
+var verbose = !!opts['--verbose'];
 var output = process.stdout;
-var tailing = hasFlag('-t') || hasFlag('--tail');
-if (hasFlag('-p') || hasFlag('--paginate')) {
-    if (tailing) {
-        throw new Error('Cannot use -t and -p at the same time.');
-    }
+if (opts['--paginate']) {
     output = pager({
         pager: 'less',
         args: ['-R', '-S'],
     });
 }
 
-var baseURL = getArg('-u') || getArg('--url') || getProperty('url');
+var baseURL = opts['--url'] || getProperty('url');
 if (!baseURL) {
-    console.error('Error: url is required.');
-    help();
+    console.error('Error: url is required.\n');
+    console.error(doc);
+    process.exit();
 }
 
-var branch = getArg('-b') || getArg('--branch') || getProperty('branch');
+var branch = opts['--branch'] || getProperty('branch');
 if (!branch) {
-    console.error('Error: branch is required.');
-    help();
+    console.error('Error: branch is required.\n');
+    console.error(doc);
+    process.exit();
 }
 
 output.write(`Fetching build info for ${branch}...\n`);
-if (hasFlag('-v') || hasFlag('--verbose')) {
+if (verbose) {
     console.log(`${baseURL}/${branch}/api/json`);
 }
+console.log(`${baseURL}/${branch}/api/json`);
 fetch(`${baseURL}/${branch}/api/json`)
     .then(function (res) {
         return res.json();
@@ -99,7 +90,7 @@ fetch(`${baseURL}/${branch}/api/json`)
                 res.body.pipe(seek).pipe(output);
                 res.body.on('close', function () {
                     start = seek.bytes;
-                    if (tailing) {
+                    if (opts['--tail']) {
                         setTimeout(tail, getProperty('delay-ms') || 10000);
                     }
                 });
