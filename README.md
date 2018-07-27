@@ -1,17 +1,19 @@
-# jc: Tail Jenkins Console Logs in Style
+# jc: Tail Jenkins logs in your terminal
 
-## :boom: Install/Contribute
+## Install
 
-    git clone https://github.com/watsoncj/jc.git
-    cd jc
-    npm link
+    npm install @watsoncj/jc
 
-## :boom: Profit
+Create a config file at \`$HOME/.jc\` with the following format:
 
-Usage:
+    url=https://jenkins.example.com/job/Group/job
+    branch=develop
+    delay-ms=5000
 
-      jc logs [options] [--tail | --paginate] [<branch>] [<number>]
-      jc --help
+## Usage
+
+    jc logs [options] [--tail | --paginate] [<branch>] [<number>]
+    jc --help
 
 Options:
 
@@ -29,4 +31,11 @@ For convenience, create a config file at \`~/.jc\` with the following format:
 
 ## Known Issues
 
-- Jenkins removes duplicate newlines in the `/consoleText` response. Because of this the output will not have any blank lines.
+* Jenkins removes duplicate newlines in the `/consoleText` response. Because of this the output will not have any blank lines.
+
+## Contributing
+
+    git clone https://github.com/watsoncj/jc.git
+    cd jc
+    npm link
+

@@ -1,5 +1,5 @@
 {
-  "name": "jc",
+  "name": "@watsoncj/jc",
   "version": "1.0.0",
   "description": "Tail Jenkins Console Logs",
   "main": "index.js",
