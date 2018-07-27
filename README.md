@@ -2,7 +2,7 @@
 
 ## Install
 
-    npm install @watsoncj/jc
+    npm install -g @watsoncj/jc
 
 Create a config file at \`$HOME/.jc\` with the following format:
 
