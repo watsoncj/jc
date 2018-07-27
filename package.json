@@ -1,6 +1,6 @@
 {
   "name": "@watsoncj/jc",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Tail Jenkins Console Logs",
   "main": "index.js",
   "bin": {
@@ -11,6 +11,10 @@
   },
   "author": "Casey Watson <watsoncj@gmail.com>",
   "license": "MIT",
+  "repository": {
+      "type": "git",
+      "url" : "https://github.com/watsoncj/jc.git"
+  },
   "dependencies": {
     "default-pager": "^1.1.0",
     "docopt": "^0.6.2",
